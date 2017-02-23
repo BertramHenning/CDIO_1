@@ -146,7 +146,7 @@ public class Controller {
 					break;
 				case 5:
 					List<String> roles4= new ArrayList<String>();
-					roles4.addAll(roles3);
+					roles4.removeAll(roles3);
 					user.setRoles(roles4);
 					break loop;
 			
