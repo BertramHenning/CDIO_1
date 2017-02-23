@@ -86,8 +86,78 @@ public class Controller {
 
 	private void updateUser() {
 		// TODO Auto-generated method stub
-		
+		UserDTO user = new UserDTO();
+		int choice = 0;
+		switch(choice){
+			case 1:		user.setUserName(sc.nextLine());
+						Scanner ini = new Scanner(user.getUserName());
+						String initials = "";
+						while(ini.hasNext()){
+							initials = initials + ini.next().charAt(0);
+						}
+						user.setIni(initials);
+						ini.close();
+				break;
+			case 2: 	user.setPassword(sc.nextLine());
+				break;
+			case 3:		user.setCpr(sc.nextLine());
+				break;
+			case 4:		Set<String> roles= new HashSet<String>();
+						loop:
+						while(true){
+							switch (sc.nextInt()) {
+							case 1:
+								roles.add("Admin");
+								break;
+							case 2:
+								roles.add("Pharmacist");
+								break;
+							case 3:
+								roles.add("Foreman");
+								break;
+							case 4:
+								roles.add("Operator");
+								break;
+							case 5:
+								List<String> roles2= new ArrayList<String>();
+								roles2.addAll(roles);
+								user.setRoles(roles2);
+								break loop;
+						
+							default:
+								break;
+					}
+			}
+			case 5:Set<String> roles3= new HashSet<String>();
+			loop:
+			while(true){
+				switch (sc.nextInt()) {
+				case 1:
+					roles3.remove("Admin");
+					break;
+				case 2:
+					roles3.remove("Pharmacist");
+					break;
+				case 3:
+					roles3.remove("Foreman");
+					break;
+				case 4:
+					roles3.remove("Operator");
+					break;
+				case 5:
+					List<String> roles4= new ArrayList<String>();
+					roles4.addAll(roles3);
+					user.setRoles(roles4);
+					break loop;
+			
+				default:
+					break;
+				}
+		}
+			default:
+				break;
 	}
+}
 
 	private void showUsers() {
 		try {
