@@ -8,11 +8,10 @@ import dal.IUserDAO.DALException;
 import dal.NonPersistentDAO;
 import dal.UserDAODiscImpl;
 import dto.UserDTO;
-import validation.IException.InpExc;
 
 public class DBTester {
 	//TODO refactor as JUnit test???
-	public static void main(String[] args) throws InpExc {
+	public static void main(String[] args){
 		IUserDAO iDAO = new NonPersistentDAO();
 		UserDTO newUser = new UserDTO();
 		printUsers(iDAO);

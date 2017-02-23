@@ -5,8 +5,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-//Packet imports
-import validation.IException.InpExc;
 
 public class UserDTO implements Serializable{
 
@@ -29,10 +27,6 @@ public class UserDTO implements Serializable{
 		this.userId = userId;
 	}
 	
-	public boolean checkUserId(int uderId) throws InpExc{
-		
-		return false;
-	}
 	
 	
 	//Name operations
@@ -44,10 +38,6 @@ public class UserDTO implements Serializable{
 		this.userName = userName;
 	}
 	
-	public boolean checkUserName(String userName) throws InpExc{
-		
-		return false;
-	}
 	
 	
 	//Ini operations
@@ -59,10 +49,6 @@ public class UserDTO implements Serializable{
 		this.ini = ini;
 	}
 	
-	public boolean checkIni(String ini) throws InpExc{
-		
-		return true;
-	}
 
 	
 	//Role operations
