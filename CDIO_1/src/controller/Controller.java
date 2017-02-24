@@ -19,6 +19,7 @@ public class Controller {
 	private TUI tui;
 
 	public Controller() {
+//		this.users = new NonPersistentDAO();
 		this.users = new SerialDAO();
 		this.tui = new TUI();
 	}
