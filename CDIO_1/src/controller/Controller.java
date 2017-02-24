@@ -11,30 +11,27 @@ import java.util.Set;
 import dal.IUserDAO;
 import dal.IUserDAO.DALException;
 import dal.NonPersistentDAO;
+import dal.SerialDAO;
 import dto.UserDTO;
-import ui.TUI;
 
 public class Controller {
-	private Scanner sc;
 	private IUserDAO users;
 	private TUI tui;
 
 	public Controller() {
-		this.sc = new Scanner(System.in);
-		this.users = new NonPersistentDAO();
+		this.users = new SerialDAO();
 		this.tui = new TUI();
 	}
 
 	public void start() {
 		while(1<2){
-			String input = tui.welcome();
-			switch (input.charAt(0)-'0') {
+			switch (tui.welcome()) {
 			case 1:
 				UserDTO newUser = createUser();
 				try {
 					users.createUser(newUser);
 				} catch (DALException e) {
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				}
 				
 				break;
@@ -47,6 +44,9 @@ public class Controller {
 			case 4:
 				deleteUser();
 				break;
+			case 5:
+				System.exit(0);
+				break;
 
 			default:
 				break;
@@ -57,8 +57,7 @@ public class Controller {
 	}
 
 	private void deleteUser() {
-		System.out.println("hvilken user id?");
-		int id = sc.nextInt();
+		int id = tui.uID();
 		try {
 			users.deleteUser(id);
 		} catch (DALException e) {
@@ -102,14 +101,13 @@ public class Controller {
 		try {
 			users.updateUser(user);
 		} catch (DALException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 }
 
 	private void showUsers() {
 		try {
-			System.out.println(users.getUserList().toString());
+			tui.visBrugere(users.getUserList().toString());
 		} catch (DALException e) {
 			System.out.println(e.getMessage());
 		}
@@ -118,18 +116,10 @@ public class Controller {
 
 	private UserDTO createUser() {
 		UserDTO user = new UserDTO();
-		System.out.println("indtast �nsket userid mellem 11 og 99:");
-		while(true){
-			int i = sc.nextInt();
-			if (i < 100 && i > 10){
-				user.setUserId(i);
-				sc.nextLine();
-				break;
-			}
-			System.out.println("Pr�v igen:");
-		}
-		System.out.println("indtast navn:");
-		user.setUserName(sc.nextLine());
+		int id = tui.uID();
+		user.setUserId(id);
+		
+		user.setUserName(tui.uNavn());
 		
 		Scanner ini = new Scanner(user.getUserName());
 		String initials = "";
@@ -139,33 +129,27 @@ public class Controller {
 		user.setIni(initials);
 		ini.close();
 		
-		System.out.println("indtast �nsket password:");
-		user.setPassword(sc.nextLine());
+		user.setPassword(generatePassword());
 		
-		System.out.println("indtast cpr nr:");
-		user.setCpr(sc.nextLine());
+		user.setCpr(tui.cprNr());
 
-		System.out.println("hvilke roller vil du have?");
 		Set<String> roles= new HashSet<String>();
 		loop:
 		while(true){
-			System.out.println("dine roller: " + Arrays.toString(roles.toArray()));
-			System.out.println("Hvilken vil du tilf�je?");
-			System.out.println("1: Admin, 2: Pharmacist, 3: Foreman, 4: Operator 5: Ikke flere roller");
-			switch (sc.nextInt()) {
-			case 1:
+			switch (tui.opdaterRolle(roles)) {
+			case "1":
 				roles.add("Admin");
 				break;
-			case 2:
+			case "2":
 				roles.add("Pharmacist");
 				break;
-			case 3:
+			case "3":
 				roles.add("Foreman");
 				break;
-			case 4:
+			case "4":
 				roles.add("Operator");
 				break;
-			case 5:
+			case "5":
 				List<String> roles2= new ArrayList<String>();
 				roles2.addAll(roles);
 				user.setRoles(roles2);
@@ -209,6 +193,52 @@ public class Controller {
 			}
 		}
 
+	}
+	public String generatePassword(){
+		int antalTal = (int) (Math.random() * 2) + 2;
+		int antalStoreBog = (int) (Math.random() * 2) + 2;
+		int antalSmåBog = 8- antalTal - antalStoreBog;
+		
+		String[] SB = new String[antalStoreBog];
+		
+		for(int i = 0; i < SB.length; i++){
+			String StoreB = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			char a = StoreB.charAt((int) (Math.random() * 27));
+			SB[i] ="" + a; 
+		}
+		String[] SmB = new String[antalSmåBog];
+		
+		for(int i = 0; i < SmB.length; i++){
+			String SmåB = "abcdefghijklmnopqrstuvwxyz";
+			char b = SmåB.charAt((int) (Math.random() * 27));
+			SmB[i] = "" + b;
+		}
+		String[] Tal = new String[antalTal];
+		
+		for(int i = 0; i < Tal.length; i++){
+			String tal = "0123456789";
+			char c = tal.charAt((int) (Math.random() * 10));
+			Tal[i] = "" + c;
+		}
+		String[] SBSmB = new String[SB.length + SmB.length];
+		for(int i =0;i<SBSmB.length;i++){
+		    SBSmB[i] = (i<SB.length)?SB[i]:SmB[i-SB.length];
+		}
+		
+		String[] all = new String[SBSmB.length + Tal.length];
+		for(int i = 0; i < all.length; i++){
+			all[i] = (i < SBSmB.length)?SBSmB[i]:Tal[i-SBSmB.length];
+		}
+		
+		for (int i = 0; i < all.length; i++) {
+			float f = (float) Math.random() * all.length;
+			int a = (int) f;
+
+			String temp = all[i];
+			all[i] = all[a];
+			all[a] = temp;
+		}
+		return Arrays.toString(all);
 	}
 	public void removeRole(UserDTO user){
 		Set<String> roles= new HashSet<String>();
