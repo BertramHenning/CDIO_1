@@ -80,7 +80,7 @@ public class TUI {
 		System.out.println("1 for navn");
 		System.out.println("2 for password");
 		System.out.println("3 for cpr-nr");
-		System.out.println("4 for at tilf�je roller");
+		System.out.println("4 for at tilføje roller");
 		System.out.println("5 for at fjerne roller");
 		int out = 0;
 		out = valg.nextInt();
@@ -91,7 +91,7 @@ public class TUI {
 	public String opdaterRolle(Set<String> roles){
 		String out = "";
 		System.out.println("Dine roller: " + Arrays.toString(roles.toArray()));
-		System.out.println("Hvilken vil du tilf�je?");
+		System.out.println("Hvilken vil du tilføje?");
 		System.out.println("1: Admin, 2: Pharmacist, 3: Foreman, 4: Operator 5: Ikke flere roller");
 		out = valg.nextLine();
 		
@@ -108,7 +108,7 @@ public class TUI {
 		
 	}
 	public int sletBruger() {
-		System.out.println("Indtast ID for den bruger du �nsker at slette");
+		System.out.println("Indtast ID for den bruger du ønsker at slette");
 		return valg.nextInt();
 	}
 	
