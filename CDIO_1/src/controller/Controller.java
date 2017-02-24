@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.ArrayList;
+import ui.TUI;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -10,16 +11,17 @@ import java.util.Set;
 import dal.IUserDAO;
 import dal.IUserDAO.DALException;
 import dal.NonPersistentDAO;
-import dal.SerialDAO;
 import dto.UserDTO;
 
 public class Controller {
 	private Scanner sc;
 	private IUserDAO users;
+	private TUI tui;
 
 	public Controller() {
 		this.sc = new Scanner(System.in);
-		this.users = new SerialDAO();
+		this.users = new NonPersistentDAO();
+		this.tui = new TUI();
 	}
 
 	public void start() {
@@ -43,25 +45,7 @@ public class Controller {
 				showUsers();
 				break;
 			case 3:
-				System.out.println("lav en ny user der udskifter den anden med samme id");
-				UserDTO user = createUser();
-				UserDTO oldUser = null;
-				try {
-					oldUser = users.getUser(user.getUserId());
-				} catch (DALException e) {
-					e.printStackTrace();
-					break;
-				}
-				System.out.println("Vil du udskifte " + oldUser + " med " + user + "?");
-				System.out.println("tryk 1 for ja, 0 for nej");
-				if(sc.nextInt() == 1){
-					try {
-						users.updateUser(user);
-					} catch (DALException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+				updateUser();
 				break;
 			case 4:
 				deleteUser();
@@ -86,9 +70,45 @@ public class Controller {
 	}
 
 	private void updateUser() {
-		// TODO Auto-generated method stub
 		
+		UserDTO user = new UserDTO();
+		try {
+			user = users.getUser(tui.uID());
+		} catch (DALException e1) {
+			e1.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("User findes ikke");
+			return;
+		}
+		switch(tui.opdaterBruger()){
+			case 1:	
+				user.setUserName(tui.uNavn());
+						Scanner ini = new Scanner(user.getUserName());
+						String initials = "";
+						while(ini.hasNext()){
+							initials = initials + ini.next().charAt(0);
+						}
+						user.setIni(initials);
+						ini.close();
+				break;
+			case 2: 	user.setPassword(tui.password());
+				break;
+			case 3:		user.setCpr(tui.cprNr());
+				break;
+			case 4:		addRole(user);	
+				break;
+			case 5:		removeRole(user);
+				break;
+			default:
+				break;
 	}
+		try {
+			users.updateUser(user);
+		} catch (DALException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+}
 
 	private void showUsers() {
 		try {
@@ -162,5 +182,67 @@ public class Controller {
 		
 		
 	}
+	public void addRole(UserDTO user){
+		Set<String> roles= new HashSet<String>();
+		roles.addAll(user.getRoles());
+		loop:
+		
+		while(true){
+			switch (tui.opdaterRolle(roles)) {
+			case "1":
+				roles.add("Admin");
+				break;
+			case "2":
+				roles.add("Pharmacist");
+				break;
+			case "3":
+				roles.add("Foreman");
+				break;
+			case "4":
+				roles.add("Operator");
+				break;
+			case "5":
+				List<String> roles2= new ArrayList<String>();
+				roles2.addAll(roles);
+				user.setRoles(roles2);
+				break loop;
+				
+			default:
+				break;
+			}
+		}
 
+	}
+	public void removeRole(UserDTO user){
+		Set<String> roles= new HashSet<String>();
+		roles.addAll(user.getRoles());
+		loop:
+		
+		while(true){
+			switch (tui.opdaterRolle2(roles)) {
+			case "1":
+				roles.remove("Admin");
+				break;
+			case "2":
+				roles.remove("Pharmacist");
+				break;
+			case "3":
+				roles.remove("Foreman");
+				break;
+			case "4":
+				roles.remove("Operator");
+				break;
+			case "5":
+				List<String> roles2= new ArrayList<String>();
+				roles2.addAll(roles);
+				user.setRoles(roles2);
+				break loop;
+				
+			default:
+				break;
+			}
+		}
+		
+		
+	}
 }
