@@ -38,8 +38,12 @@ public class NonPersistentDAO implements IUserDAO {
 
 	@Override
 	public void updateUser(UserDTO user) throws DALException {
-		getUser(user.getUserId());
-		users.put(user.getUserId(), user);
+		UserDTO oldUser = getUser(user.getUserId());
+		if (oldUser != null){
+			users.put(user.getUserId(), user);
+		} else {
+			throw new DALException("User findes ikke");
+		}
 	}
 
 	@Override
