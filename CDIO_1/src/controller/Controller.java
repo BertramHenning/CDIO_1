@@ -12,24 +12,23 @@ import dal.IUserDAO.DALException;
 import dal.NonPersistentDAO;
 import dal.SerialDAO;
 import dto.UserDTO;
+import ui.TUI;
 
 public class Controller {
 	private Scanner sc;
 	private IUserDAO users;
+	private TUI tui;
 
 	public Controller() {
 		this.sc = new Scanner(System.in);
 		this.users = new SerialDAO();
+		this.tui = new TUI();
 	}
 
 	public void start() {
 		while(1<2){
-			System.out.println("vælg:");
-			System.out.println("1, Opret bruger");
-			System.out.println("2, Vis brugere");
-			System.out.println("3, Opdater bruger");
-			System.out.println("4, Slet brugere.");
-			switch (sc.nextInt()) {
+			String input = tui.welcome();
+			switch (input.charAt(0)-'0') {
 			case 1:
 				UserDTO newUser = createUser();
 				try {
@@ -101,7 +100,7 @@ public class Controller {
 
 	private UserDTO createUser() {
 		UserDTO user = new UserDTO();
-		System.out.println("indtast ønsket userid mellem 11 og 99:");
+		System.out.println("indtast ï¿½nsket userid mellem 11 og 99:");
 		while(true){
 			int i = sc.nextInt();
 			if (i < 100 && i > 10){
@@ -109,7 +108,7 @@ public class Controller {
 				sc.nextLine();
 				break;
 			}
-			System.out.println("Prøv igen:");
+			System.out.println("Prï¿½v igen:");
 		}
 		System.out.println("indtast navn:");
 		user.setUserName(sc.nextLine());
@@ -122,7 +121,7 @@ public class Controller {
 		user.setIni(initials);
 		ini.close();
 		
-		System.out.println("indtast ønsket password:");
+		System.out.println("indtast ï¿½nsket password:");
 		user.setPassword(sc.nextLine());
 		
 		System.out.println("indtast cpr nr:");
@@ -133,7 +132,7 @@ public class Controller {
 		loop:
 		while(true){
 			System.out.println("dine roller: " + Arrays.toString(roles.toArray()));
-			System.out.println("Hvilken vil du tilføje?");
+			System.out.println("Hvilken vil du tilfï¿½je?");
 			System.out.println("1: Admin, 2: Pharmacist, 3: Foreman, 4: Operator 5: Ikke flere roller");
 			switch (sc.nextInt()) {
 			case 1:
