@@ -10,6 +10,7 @@ import java.util.Set;
 import dal.IUserDAO;
 import dal.IUserDAO.DALException;
 import dal.NonPersistentDAO;
+import dal.SerialDAO;
 import dto.UserDTO;
 
 public class Controller {
@@ -18,7 +19,7 @@ public class Controller {
 
 	public Controller() {
 		this.sc = new Scanner(System.in);
-		this.users = new NonPersistentDAO();
+		this.users = new SerialDAO();
 	}
 
 	public void start() {

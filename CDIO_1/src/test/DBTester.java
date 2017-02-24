@@ -6,13 +6,14 @@ import java.util.List;
 import dal.IUserDAO;
 import dal.IUserDAO.DALException;
 import dal.NonPersistentDAO;
+import dal.SerialDAO;
 import dal.UserDAODiscImpl;
 import dto.UserDTO;
 
 public class DBTester {
 	//TODO refactor as JUnit test???
 	public static void main(String[] args){
-		IUserDAO iDAO = new NonPersistentDAO();
+		IUserDAO iDAO = new SerialDAO();
 		UserDTO newUser = new UserDTO();
 		printUsers(iDAO);
 		//TODO test new fields...
